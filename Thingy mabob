@@ -1,0 +1,192 @@
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+local Window = OrionLib:MakeWindow({Name = "Glitch Garden", HidePremium = false, IntroText = "Welcome, please wait. This may take a while...", SaveConfig = true, ConfigFolder = "OrionTest"})
+
+-- Player Tab
+local PlayerTab = Window:MakeTab({
+    Name = "Player",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+PlayerTab:AddButton({
+    Name = "Speed 50",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoid = character:WaitForChild("Humanoid")
+        humanoid.WalkSpeed = 50
+    end    
+})
+
+PlayerTab:AddButton({
+    Name = "Speed 80",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoid = character:WaitForChild("Humanoid")
+        humanoid.WalkSpeed = 80
+    end    
+})
+
+PlayerTab:AddButton({
+    Name = "Jump Power 80",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoid = character:WaitForChild("Humanoid")
+        humanoid.JumpPower = 80
+    end    
+})
+
+PlayerTab:AddButton({
+    Name = "Jump Power 100",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoid = character:WaitForChild("Humanoid")
+        humanoid.JumpPower = 100
+    end    
+})
+
+PlayerTab:AddButton({
+    Name = "Noclip",
+    Callback = function()
+        local noclip = false
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+
+        -- Function to toggle noclip
+        local function toggleNoclip()
+            noclip = not noclip
+            if noclip then
+                -- Enable noclip
+                for _, part in pairs(character:GetDescendants()) do
+                    if part:IsA("BasePart") and part.CanCollide then
+                        part.CanCollide = false
+                    end
+                end
+            else
+                -- Disable noclip
+                for _, part in pairs(character:GetDescendants()) do
+                    if part:IsA("BasePart") and not part.CanCollide then
+                        part.CanCollide = true
+                    end
+                end
+            end
+        end
+
+        -- Call toggleNoclip to switch between noclip modes
+        toggleNoclip()
+    end    
+})
+
+-- Visual Tab
+local VisualTab = Window:MakeTab({
+    Name = "Visual",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+VisualTab:AddButton({
+    Name = "ESP",
+    Callback = function()
+        -- Function to create ESP for a given part
+        local function createESP(part)
+            local esp = Instance.new("BoxHandleAdornment")
+            esp.Adornee = part
+            esp.AlwaysOnTop = true
+            esp.ZIndex = 5
+            esp.Size = part.Size + Vector3.new(0.1, 0.1, 0.1)
+            esp.Color3 = Color3.fromRGB(255, 0, 0) -- Red color
+            esp.Transparency = 0.5
+            esp.Parent = part
+        end
+
+        -- Function to remove ESP for a given part
+        local function removeESP(part)
+            for _, child in pairs(part:GetChildren()) do
+                if child:IsA("BoxHandleAdornment") then
+                    child:Destroy()
+                end
+            end
+        end
+
+        -- Function to toggle ESP for a given player
+        local function toggleESP(player)
+            for _, character in ipairs(player.Character:GetChildren()) do
+                if character:IsA("Model") then
+                    for _, part in ipairs(character:GetDescendants()) do
+                        if part:IsA("BasePart") then
+                            if not part:FindFirstChildOfClass("BoxHandleAdornment") then
+                                createESP(part)
+                            else
+                                removeESP(part)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+
+        -- Example: Call toggleESP to activate ESP
+        toggleESP(game.Players.LocalPlayer)
+        print("ESP activated")
+    end    
+})
+
+VisualTab:AddButton({
+    Name = "Xray",
+    Callback = function()
+        -- Function to make a part transparent
+        local function makePartTransparent(part)
+            part.Transparency = 0.5
+        end
+
+        -- Function to make all parts transparent
+        local function makeAllPartsTransparent(character)
+            for _, part in ipairs(character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    makePartTransparent(part)
+                end
+            end
+        end
+
+        -- Function to reset part transparency
+        local function resetPartTransparency(part)
+            part.Transparency = 0
+        end
+
+        -- Function to reset transparency of all parts
+        local function resetAllPartsTransparency(character)
+            for _, part in ipairs(character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    resetPartTransparency(part)
+                end
+            end
+        end
+
+        -- Function to toggle Xray mode for a given player
+        local function toggleXray(player)
+            for _, character in ipairs(player.Character:GetChildren()) do
+                if character:IsA("Model") then
+                    for _, part in ipairs(character:GetDescendants()) do
+                        if part:IsA("BasePart") then
+                            if part.Transparency == 0 then
+                                makePartTransparent(part)
+                            else
+                                resetPartTransparency(part)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+
+        -- Example: Call toggleXray to activate Xray for the local player
+        toggleXray(game.Players.LocalPlayer)
+        print("Xray activated")
+    end    
+})
+
+OrionLib:Init()
